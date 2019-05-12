@@ -4,19 +4,37 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
 
 group = 'com.shariq.superheromicroservices'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+sourceSets {
+	itest
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	itestImplementation.extendsFrom implementation
+	itestRuntime.extendsFrom runtime
 }
 
 repositories {
 	mavenCentral()
+}
+
+idea {
+	module {
+		testSourceDirs += project.sourceSets.itest.java.srcDirs
+		testSourceDirs += project.sourceSets.itest.resources.srcDirs
+
+		// put our custom test dependencies onto IDEA's TEST scope
+		// Ref: https://docs.gradle.org/current/dsl/org.gradle.plugins.ide.idea.model.IdeaModule.html
+		scopes.TEST.plus += [configurations.itestCompileClasspath]
+	}
 }
 
 ext {
@@ -28,7 +46,12 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	itestImplementation 'org.springframework.boot:spring-boot-starter-test'
+	itestImplementation sourceSets.main.output
+	itestRuntime configurations.runtime
 }
 
 dependencyManagement {
@@ -36,3 +59,22 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+
+bootRun {
+	systemProperty 'spring.profiles.active', 'local'
+
+	// could also use the following line:
+	// args = ["--spring.profiles.active=local"]
+}
+
+test {
+	// cannot use "args" like in bootRun
+	systemProperty 'spring.profiles.active', 'test'
+}
+
+task itest(type: Test, group: 'Verification') {
+	testClassesDirs = sourceSets.itest.output.classesDirs
+	classpath = sourceSets.itest.runtimeClasspath
+}
+
+tasks.check.dependsOn itest
