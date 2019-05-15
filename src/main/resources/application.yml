@@ -1,8 +1,10 @@
 spring:
   profiles: cloud
+server:
+  port: ${PORT:5000}
 villains:
   ribbon:
-    listOfServers:
+    listOfServers: https://rocky-sands-35353.herokuapp.com
 
 ---
 spring:
