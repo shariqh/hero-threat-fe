@@ -1,10 +1,10 @@
 package com.shariq.superheromicroservices.superherofe.model;
 
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class Villain {
 
     private Long id;
