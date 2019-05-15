@@ -19,7 +19,6 @@ public class SuperheroFeController {
 
     @PostMapping("/createVillain")
     public ResponseEntity<Villain> createVillain(@RequestBody Villain newVillain) {
-        System.out.println("VILLAIN:===================" + newVillain.getName());
         return ResponseEntity.ok(superheroFeService.createVillain(newVillain));
     }
 }

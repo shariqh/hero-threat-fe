@@ -4,7 +4,7 @@ import com.shariq.superheromicroservices.superherofe.model.Villain;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "villains", url = "localhost:8080")
+@FeignClient("villains")
 public interface SuperheroClient {
 
     @PostMapping("/villains")

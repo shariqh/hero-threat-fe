@@ -1,2 +1,14 @@
+spring:
+  profiles: cloud
+villains:
+  ribbon:
+    listOfServers:
+
+---
+spring:
+  profiles: test, local
+villains:
+  ribbon:
+    listOfServers: localhost:8080
 server:
   port: 8081
